@@ -58,7 +58,7 @@ def OutputResults(prosite_dat, ResultDict, Results_Dir):
 	output = open (Results_Dir + 'prosite_result.txt',"w")
 	HitIds = ResultDict.keys()
 	for protein in HitIds:
-		output.write('La proteína ' + protein + ' presenta los siguientes dominios:\n\n')
+		output.write('Protein ' + protein + ' has the following domains:\n\n')
 		for dominio in ResultDict[protein]:
 			handle = open(prosite_dat, "r")
 			records = Prosite.parse(handle)
@@ -91,10 +91,10 @@ def WantMoreInfo(prosite_doc, ResultDict, Results_Dir):
 		print ('\nDo you want to obtain more information about the domains detected in the hits?')
 		MoreInfo = input('[Y|N]: ').upper()
 		if MoreInfo == 'Y' or MoreInfo == '':
-			Ext_Info = open (Results_Dir + 'Extended_Domain_Info.txt','w')
+
 			for key in ResultDict.keys():
-				Ext_Info.write((' Extended information about the domains in %s ' %(key)).center(78,'#') + '\n\n')
-				DocParser(prosite_doc, key, ResultDict, Ext_Info)
+				
+				DocParser(prosite_doc, key, ResultDict, Results_Dir)
 			return
 		elif MoreInfo == 'N':
 			return
@@ -102,20 +102,23 @@ def WantMoreInfo(prosite_doc, ResultDict, Results_Dir):
 			print ('Sorry, We did not understand you. Please answer yes by typing "y", "Y" or clicking intro, or answer no by typing "n" or "N".' )
 	return
 
-def DocParser(prosite_doc, key, ResultDict, Ext_Info):
+def DocParser(prosite_doc, key, ResultDict, Results_Dir):
 	# con este script podemos parsear el archivo .doc
+	Ext_Info = open (Results_Dir + 'Extended_Domain_Info_%s.txt' %(key),'w')
+	Ext_Info.write('\n' + (' Extended information about the domains in %s ' %(key)).center(78,'#') + '\n\n')
 	for Prosite_Id in ResultDict[key]:
 		handle = open(prosite_doc)
 		records = Prodoc.parse(handle)
 		for record in records:
-			#print (record,Prosite_Id)
-			#print (record.prosite_refs)
 			try:
 				if len(record.prosite_refs) > 0:
+					
 					for domain in range(len(record.prosite_refs)):
 						#print (record.prosite_refs[domain][0],domain,Prosite_Id)
-						if record.prosite_refs[domain][0] == Prosite_Id:
-							i+=1
+						if Prosite_Id == record.prosite_refs[domain][0]:
+#						elif record.prosite_refs[domain][0] == Prosite_Id:
+						#if Prosite_Id in record.prosite_refs[domain]:
+							#i+=1
 							#print(record.accession)
 							#print(type(record.prosite_refs))
 							Ext_Info.write(Prosite_Id.center(80))
@@ -123,17 +126,10 @@ def DocParser(prosite_doc, key, ResultDict, Ext_Info):
 							Ext_Info.write(record.text.center(80))
 							#print(count)
 							#print(record.references.decode('utf-8'))
+						#print ("Fuera")
 			except:
 				pass
 				
 	return
 
 #DocParser()
-
-'''#ScanProsite()
-PatternDict = DatParser()
-#QueryFile = 'NCTN'
-#PatternTranslation()
-HitsDict = HitsFileToDict('HitsFile.txt')
-ResultDict = PatternSearch(PatternDict,HitsDict)
-OutputResults (ResultDict)'''
