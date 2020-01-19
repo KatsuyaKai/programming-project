@@ -29,21 +29,24 @@ def Align_Seqs(HitsFile):
 
 def CreateTree(AlignedHitsFile, Results_Dir = '', Results_Muscle = ''):
     print ('\n' + ('Creating Neighbor Joining Tree...').center(80))
-    Tree = Popen(['muscle','-maketree', '-in', AlignedHitsFile, '-cluster', 'neighborjoining'], stdout=PIPE, stderr=PIPE)
-    
-    Tree_File = open(Results_Muscle + 'NJ_Tree.phy',"w")
-    Tree_File.write('\n' + ' Neighbor Joining Tree in Newick format '.center(80,'-') + '\n\n')
-    contents = Tree.stdout.read().decode('utf-8')
-    newcontents = contents.replace('\n','')
-    Tree_File.write(newcontents)
+    try:
+        Tree = Popen(['muscle','-maketree', '-in', AlignedHitsFile, '-cluster', 'neighborjoining'], stdout=PIPE, stderr=PIPE)
+        
+        Tree_File = open(Results_Muscle + 'NJ_Tree.phy',"w")
+        Tree_File.write('\n' + ' Neighbor Joining Tree in Newick format '.center(80,'-') + '\n\n')
+        contents = Tree.stdout.read().decode('utf-8')
+        newcontents = contents.replace('\n','')
+        Tree_File.write(newcontents)
 
-    error_Tree = Tree.stderr.read()
-    Muscle_log = open (Results_Dir + 'Process.log',"a")
-    if error_Tree:
-        Muscle_log.write ('\n\n\n' + ("Creating Neighbor Joining Tree using Muscle...").center(80) + '\n')
-        Muscle_log.write (error_Tree.decode('utf-8'))
-        Muscle_log.write ('\n' + ("Neighbor Joining Tree successfully created").center(80) + '\n')
-        Muscle_log.write (('Check Muscle results at: ' + Results_Dir + 'Muscle').center(80))
+        error_Tree = Tree.stderr.read()
+        Muscle_log = open (Results_Dir + 'Process.log',"a")
+        if error_Tree:
+            Muscle_log.write ('\n\n\n' + ("Creating Neighbor Joining Tree using Muscle...").center(80) + '\n')
+            Muscle_log.write (error_Tree.decode('utf-8'))
+            Muscle_log.write ('\n' + ("Neighbor Joining Tree successfully created").center(80) + '\n')
+            Muscle_log.write (('Check Muscle results at: ' + Results_Dir + 'Muscle').center(80))
+    except:
+        print('Errors encountered while trying to perform alignment with MUSCLE. Please, check if MUSCLE is correctly installed.')
 
 
     return

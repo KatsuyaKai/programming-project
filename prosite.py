@@ -123,7 +123,7 @@ def DocParser(prosite_doc, key, ResultDict, Results_Dir):
 							#print(type(record.prosite_refs))
 							Ext_Info.write(Prosite_Id.center(80))
 							Ext_Info.write('\n\n')
-							Ext_Info.write(record.text.center(80))
+							Ext_Info.write(record.text)
 							#print(count)
 							#print(record.references.decode('utf-8'))
 						#print ("Fuera")

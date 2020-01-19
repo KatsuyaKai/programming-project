@@ -28,8 +28,11 @@ def main():
     else:
         print ("\n" + (query + ' is not fasta.').center(80))
         print ('Please check the format of your query_file.'.center(80) + "\n")
-        os.rmdir('Results/' + str(basename)) ## We delete this empty directory.
-        shutil.rmtree('Data/' + str(basename)) ## We delete this directory which is not empty.
+        try: 
+            os.rmdir('Results/' + str(basename)) ## We delete this empty directory.
+        except:
+            pass
+        shutil.rmtree('Data/' + str(basename)) ## We delete this directory which is not empty. We do not loose important information by deleting this directory.
         sys.exit()
 
     if gbk.is_it_genbank(Genbank,basename):
@@ -37,8 +40,11 @@ def main():
     else:
         print ("\n" + (Genbank + ' is not a Genbank.').center(80))
         print ('Please check the format of your Genbank_file.'.center(80) + "\n")
-        os.rmdir('Results/' + str(basename))
-        shutil.rmtree('Data/' + str(basename))
+        try: 
+            os.rmdir('Results/' + str(basename)) ## We delete this empty directory.
+        except:
+            pass
+        shutil.rmtree('Data/' + str(basename)) 
         sys.exit()
 
     #gbk.Gbk_To_Fasta(Genbank, basename)
@@ -81,10 +87,11 @@ def main():
             Process_log.write(' Analysis for query: %s '.center(80,'*') % (query_file.name))
             Process_log.close()
 
-            blaster.Blaster(new_query, subject,coverage, identity, basename, results_dir = Results_Dir)
+            blaster.Blaster(new_query, subject, coverage, identity, basename, results_dir = Results_Dir)
             
             ## If at least one homologue is found for the criteria indicated. The first row of the file is the header.
             if len(open(Results_Blast + 'Blast_result.tsv').readlines()) > 1:
+                
                 plots.Blast_plot('Blast_result.tsv', Results_Blast, identity)
 
                 Hits = blaster.BlasterHits('Blast_result.tsv')
@@ -130,7 +137,7 @@ def main():
                 prosite.OutputResults (prosite_dat, ResultDict, Results_Prosite)
 
                 ## More information about the domains?
-                prosite.WantMoreInfo("prosite.txt", ResultDict, Results_Prosite)
+                prosite.WantMoreInfo("prosite.doc", ResultDict, Results_Prosite)
                 
                 ## Printing information in Process.log file
                 Process_log.write('\n\n' + ('Domain search completed').center(80) + '\n')
