@@ -104,18 +104,27 @@ https://github.com/KatsuyaKai/programming-project/tree/master/Queries
 ### BLAST analysis
 
 Blast analysis will yield:
-    1. A *.tsv* file with the raw output.
-    2. A plot for an easier and faster interpretation of the hits obtained. Only the top ten hits according to the *evalue* will be plotted.
+
+    1. A blast_result.tsv file with the raw output.
+    2. A plot for an easier and faster interpretation of the hits obtained. 
+    * Only the top ten hits according to the *evalue* will be plotted.
+
+<p align="center">
+  <img src="Images/Blast_Plot.png">
+</p>
+
 <a id="results-muscle"></a>
 ### MUSCLE alignment
 
 BLAST hits will be aligned with the query using Muscle. Muscle phylogenetic analysis will produce:
+
     1. A phylogenetic tree in Newick format.
     2. A simple plot of the phylogenetic tree using the Phylo module from biopython.
 <a id="results-prosite"></a>
 ### PROSITE domains
 
 Upon completion of the search for PROSITE domains in query and hits sequences, the outputs will include:
+
     1. A file named *prosite_results.txt* with a summary of the main characteristics of the domains.
     2. If you have asked for more information, a file named *Extended_Domain_Info.txt* will be created.
     
