@@ -107,8 +107,7 @@ Blast analysis will yield:
 
     1. A blast_result.tsv file with the raw output.
     2. A plot for an easier and faster interpretation of the hits obtained. 
-    * Only the top ten hits according to the *evalue* will be plotted.
-
+    * Only the top ten hits according to the evalue will be plotted.
 <p align="center">
   <img src="Images/Blast_Plot.png">
 </p>
