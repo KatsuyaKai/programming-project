@@ -32,6 +32,7 @@ def CreateTree(AlignedHitsFile, Results_Dir = '', Results_Muscle = ''):
     Tree = Popen(['muscle','-maketree', '-in', AlignedHitsFile, '-cluster', 'neighborjoining'], stdout=PIPE, stderr=PIPE)
     
     Tree_File = open(Results_Muscle + 'NJ_Tree.phy',"w")
+    Tree_File.write('\n' + ' Neighbor Joining Tree in Newick format '.center(80,'-') + '\n\n')
     contents = Tree.stdout.read().decode('utf-8')
     newcontents = contents.replace('\n','')
     Tree_File.write(newcontents)
@@ -66,6 +67,7 @@ def DrawTree(NewickFile, Results_Dir = ''):
 
     
     TreeFile = open(Results_Dir + "Tree.txt","w")
+    TreeFile.write('\n' + ' Simple plot of Neighbor Joining Tree '.center(80,'-') + '\n\n')
     Phylo.draw_ascii(tree,file = TreeFile)
     #Phylo.draw(tree, branch_labels=lambda c: c.branch_length)
     #print (Arbol)
