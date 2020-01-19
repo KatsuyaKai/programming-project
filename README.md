@@ -99,7 +99,7 @@ The following results are an example of the expected output.
 <a id="download"></a>
 #### Download test data
 
-https://gitlab.com/BS-seq/ViewBS_testdata
+https://github.com/KatsuyaKai/programming-project/tree/master/Queries
 <a id="results-blast"></a>
 #### BLAST analysis
 
