@@ -36,23 +36,23 @@ Given a protein sequence (query), or several protein sequence (multiquery), this
     3. Look for PROSITE domains in your query and its homologues. You will  be asked whether you  want extended information about the domains or not.  
 
 <a id='requirements'></a>
-## **Requirements** <a name="requirements"></a>
+## **REQUIREMENTS** <a name="requirements"></a>
 <a id='biopython'></a>
-#### **Biopython**
+### **Biopython**
 
 This program uses biopython, so please make sure it is installed.
 
 Should you need to install biopython, please see the link here: https://biopython.org/wiki/Download
 
 <a id='blast'></a>
-#### **BLAST+**
+### **BLAST+**
 
 Easy Phylo & Domain does local BLAST analysis for which it needs BLAST+ to be installed.
 
 For download and instalation instructions, check:
 https://www.ncbi.nlm.nih.gov/books/NBK52640/
 <a id='muscle'></a>
-#### MUSCLE
+### MUSCLE
 
 Muscle is required for hits alignment. 
 
@@ -60,7 +60,7 @@ If not installed, please go to:
 http://www.drive5.com/muscle/downloads.htm
 
 <a id='input'></a>
-## Input files 
+## INPUT FILES 
 
 * **Input file**: query
 
@@ -91,46 +91,46 @@ To run Easy Phylo & Domain use the command:
                                       python main.py query_file genbank_file
 
 <a id="results"></a>
-## Results 
+## RESULTS 
 
 For each query in the *query_file*, a separate folder is created, inside *Results* directory, named as the *query_file* plus the coverage and identity thresholds for the BLAST analysis.
 
 The following results are an example of the expected output.
 <a id="download"></a>
-#### Download test data
+### Download test data
 
 https://github.com/KatsuyaKai/programming-project/tree/master/Queries
 <a id="results-blast"></a>
-#### BLAST analysis
+### BLAST analysis
 
 Blast analysis will yield:
     1. A *.tsv* file with the raw output.
     2. A plot for an easier and faster interpretation of the hits obtained. Only the top ten hits according to the *evalue* will be plotted.
 <a id="results-muscle"></a>
-#### MUSCLE alignment
+### MUSCLE alignment
 
 BLAST hits will be aligned with the query using Muscle. Muscle phylogenetic analysis will produce:
     1. A phylogenetic tree in Newick format.
     2. A simple plot of the phylogenetic tree using the Phylo module from biopython.
 <a id="results-prosite"></a>
-#### PROSITE domains
+### PROSITE domains
 
 Upon completion of the search for PROSITE domains in query and hits sequences, the outputs will include:
     1. A file named *prosite_results.txt* with a summary of the main characteristics of the domains.
     2. If you have asked for more information, a file named *Extended_Domain_Info.txt* will be created.
     
 <a id="help"></a>
-## Where to find help <a name="help"></a>
+## WHERE TO FIND HELP <a name="help"></a>
 
 If you have bugs, feature requests, please report the issues here: (https://github.com/readbio/ViewBS/issues).
 
 <a id="commercial-use"></a>
-## Commercial use
+## COMMERCIAL USE
 
 Easy Phylo & Domain is free for use by academic users.
 
 <a id="author"></a>
-## Author
+## AUTHOR
 
 * Universidad Politécnica de Madrid (UPM)
 
