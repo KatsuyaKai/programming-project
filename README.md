@@ -68,8 +68,8 @@ Query file must be a fasta or a multifasta. If your file is not in fasta format,
 
 > NOTES: Easy Phylo & Domain checks if query file is in fasta format. If it is in a different format, this message will be displayed:
 
-                                            *query_file* is not fasta.
-                                    Please check the format of your query_file.
+                                            query_file is not fasta.
+                                    Please check the format of your query file.
 
 * **Input file**: Genbank
 
@@ -77,8 +77,8 @@ Genbank file must be a genbank. If your file is not in fasta format, please conv
 
 > NOTES: Easy Phylo & Domain checks if Genbank file is in genbank format. If it is in a different format, this message will be displayed:
 
-                                         *genbank_file* is not a Genbank.
-                                   Please check the format of your Genbank_file.
+                                         genbank_file is not a Genbank.
+                                   Please check the format of your Genbank file.
 
 Upon completion of the run input files will be saved into a folder, named as the *query_file*, inside *Data* directory. A database with all the sequences in the Genbank will also be generated and saved in this folder.
 
@@ -88,7 +88,7 @@ Upon completion of the run input files will be saved into a folder, named as the
 
 To run Easy Phylo & Domain use the command:
 
-                                      python main.py query_file Genbank_file
+                                      python main.py query_file genbank_file
 
 <a id="results"></a>
 ## Results 
