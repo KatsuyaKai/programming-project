@@ -40,7 +40,7 @@ Given a protein sequence (query), or several protein sequence (multiquery), this
 <a id='biopython'></a>
 ### **Biopython**
 
-This program uses biopython, so please make sure it is installed.
+This programme uses biopython, so please make sure it is installed.
 
 Should you need to install biopython, please see the link here: https://biopython.org/wiki/Download
 
@@ -90,12 +90,31 @@ To run Easy Phylo & Domain use the command:
 
                                       python main.py query_file genbank_file
 
+For each protein sequence in the query you wil be asked BLAST identity and coverage thresholds as follows:
+ 
+    Please, introduce the coverage threshold for the BLAST analysis for query_name:
+    Please, introduce the identity threshold for the BLAST analysis for query_name:
+
+You will have to enter a number between 0 and 100.    
+
+After the search for PROSITE domains, you will be asked whether you  want extended information about the domains or not.
+
+    Do you want to obtain more information about the domains detected in the hits?
+    [Y|N]:
+    
+You need to answer either yes --> [y]  or no --> [n].
+
 <a id="results"></a>
 ## RESULTS 
 
 For each query in the *query_file*, a separate folder is created, inside *Results* directory, named as the *query_file* plus the coverage and identity thresholds for the BLAST analysis.
 
-The following results are an example of the expected output.
+The following results are an example of the expected output running the programme with the test data:
+  
+                                python main.py Queries/query.fa Queries/genbank.gbff
+
+The identity and coverage thresholds used to obtain the following results have been both 0.
+
 <a id="download"></a>
 ### Download test data
 
