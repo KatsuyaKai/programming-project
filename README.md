@@ -143,8 +143,9 @@ Blast analysis will yield:
 
 BLAST hits will be aligned with the query using Muscle. Muscle phylogenetic analysis will produce:
 
-    1. A phylogenetic tree in Newick format.
-    2. A simple plot of the phylogenetic tree using the Phylo module from biopython.
+    1. The alignment file
+    2. A phylogenetic tree in Newick format.
+    3. A simple plot of the phylogenetic tree using the Phylo module from biopython.
 <a id="results-prosite"></a>
 ### PROSITE domains
 
