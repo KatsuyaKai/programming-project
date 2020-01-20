@@ -1,38 +1,40 @@
-import matplotlib.pyplot as plt
-import matplotlib.lines as lines
-import numpy as np
 import csv
 
-## This function plots the best hits, ordered by Blast evalues. It plots up to ten hits apart from the query.
-def Blast_plot(Blast_result_file, Results_Dir, identity):
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+
+# This function plots the best hits, ordered by Blast evalues. It plots up to ten hits apart from the query.
+# It needs the file with the BLAST results, the directory where it has to save the plot and the identity threshold. BLAST+ does not filter the identity.
+def blast_plot(Blast_result_file, Results_Dir, identity):
     with open (Blast_result_file) as tsvfile:
         
         reader = csv.reader(tsvfile, delimiter='\t')
         fig, ax = plt.subplots()
         number_of_hit = 0
-        qstart = []
-        qend = []
+        qstart = []        # Where the hit starts to align with the query.
+        qend = []          # Where the hit ends to align with the query
         hit_ids = []
         hit_identity = []
-        same_id = 2 # Variable for repeated hit_ids
+        same_id = 2        # Variable for repeated hit_ids
         Total_Hits = len(open(Blast_result_file).readlines(  )) # Each line of the file is a hit
         
         for hit in reader:
             if number_of_hit < 10 and number_of_hit < Total_Hits: # We plot all the hits up to ten hits
-                if float(hit[3]) >= identity:
-                    qlen = float(hit[7])
+                if float(hit[3]) >= identity:  # We only plot those who meet the identity threshold.
+                    qlen = float(hit[7])   # query length
                     
-                    category_names = ['0-20 %', '21-40 %', '41-60 %', '61-80 %', '81-100 %']
+                    # We define the different colours to indicate the % of identity of the hits with the query
+                    category_names = ['0-20 %', '21-40 %', '41-60 %', '61-80 %', '81-100 %']  # % of identity
                     Color_Bars = np.array([qlen/5,qlen/5,qlen/5,qlen/5,qlen/5])
                     Color_Bars_cum = Color_Bars.cumsum()
-
                     category_colors = plt.get_cmap('RdYlGn')(np.linspace(0.15, 0.85, 5))
-                    
-                    #ax.Line2D('',float(qlen), left = 0.0,height=0.8, linewidth = 1, edgecolor = 'cyan', color = 'white')#,label=colname, color=color)
-                    #plt.hlines(0, 0, qlen, color='black', lw=2)
                     ax.text(qlen/2, -0.7, s = 'Identity', ha='center', va='center')
 
+                    # We plot the hits.
                     for i, (colname, color) in enumerate(zip(category_names, category_colors)):
+                        # Variables to control the plot parameters
                         widths = Color_Bars[i]
                         starts = Color_Bars_cum[i] - widths
                         ax.barh("", widths, left=starts, height=1.0,
@@ -44,10 +46,11 @@ def Blast_plot(Blast_result_file, Results_Dir, identity):
                         ax.text(xcenters, 0, s = colname, ha='center', va='center',
                                     color=text_color)
                     
-                    
+                    # We first plot the query
                     if number_of_hit == 0:
                         plt.hlines('query', 0.0, float(qlen), colors='b', label = 'query' )
-                                                
+                    
+                    # We then plot the hits.                            
                     qstart.append(float(hit[5]))
                     qend.append(float(hit[6]))
                     if len(hit[1]) <= 7: # Maximum length that fits in the y axis.
@@ -66,10 +69,9 @@ def Blast_plot(Blast_result_file, Results_Dir, identity):
                         
                     hit_identity.append(float(hit[3]))
                     evalue = hit[4]
-                    #hit_position = ['1st', '2nd', '3rd', '4th', '5th','6th', '7th', '8th', '9th', '10th']
-                    
+
+                    # Colour of the bar depends on the % of identity.                    
                     if number_of_hit >= 0 and number_of_hit < len(qstart):
-                        #ax.text((qstart[number_of_hit] + qend[number_of_hit])/2, number_of_hit + 1.7, s = hit_id, ha='center', va='center', fontsize=6, wrap=True) # Label on top of each hit.
                         ax.text((qstart[number_of_hit] + qend[number_of_hit])/2, number_of_hit + 1.7, s = 'E value: ' + evalue, ha='center', va='center', fontsize=6, wrap=True) # Label on top of each hit.
                         if hit_identity[number_of_hit] <= 20: 
                             plt.hlines(hit_ids[number_of_hit], qstart[number_of_hit], qend[number_of_hit], color='r')#, label = hit_id[number_of_hit] + ' Identity = ' + str(hit_identity[number_of_hit])
@@ -81,12 +83,12 @@ def Blast_plot(Blast_result_file, Results_Dir, identity):
                             plt.hlines(hit_ids[number_of_hit], qstart[number_of_hit], qend[number_of_hit], color='lightgreen')#, label = hit_id[number_of_hit] + ' Identity = ' + str(hit_identity[number_of_hit])
                         if hit_identity[number_of_hit] > 80 and hit_identity[number_of_hit] <= 100: 
                             plt.hlines(hit_ids[number_of_hit], qstart[number_of_hit], qend[number_of_hit], color='g')#, label = hit_id[number_of_hit] + ' Identity = ' + str(hit_identity[number_of_hit])
-                    
+            # Once there are no more hits or 10 hits have already been plotted.        
             else:
                 break
             
-            
             number_of_hit += 1
+        # To maintain the dimensions if there are less than 10 hits.    
         for hits_left in range(number_of_hit,10):
             plt.hlines(hits_left, 0, 1, color='yellow', alpha = 0)
             number_of_hit +=1
@@ -100,6 +102,3 @@ def Blast_plot(Blast_result_file, Results_Dir, identity):
         plt.savefig(Results_Dir + 'Blast_Plot.png')
             
     return
-
-#Blast_plot('Blast_result.tsv')
-#Prueba()

@@ -1,44 +1,35 @@
-# script para parsear la base de datos prosite presentes en los archivos
-# prosite.doc y prosite.dat utilizando el modulo Biopython
 import re
-from Bio.ExPASy import Prosite,Prodoc,ScanProsite
 import csv
 
-'''def ScanProsite():
-	sequence = 'MNRISTTTITTITITTGNGAG'
-	handle = ScanProsite.scan(seq=sequence)
-	result = handle.read()
-	print (result)'''
+from Bio.ExPASy import Prosite,Prodoc
 
 
-def DatParser(prosite_dat):
+# prosite.dat parser. We get a dictionary with patterns as keys and accession as values. This way is easier to handle afterwards.
+def dat_parser(prosite_dat):
 	print ('\n' + ('Parsing prosite file...').center(80))
-	# con este script podeis parsear el archivo .dat
 	handle = open(prosite_dat,"r")
 	records = Prosite.parse(handle)
 	PatternDict = {}
 	for record in records:
-		patron = PatternTranslation(record.pattern)
+		patron = pattern_translation(record.pattern)
 		PatternDict[patron] = record.accession
 
 	return PatternDict
 
-def PatternTranslation(pattern):
+
+# Auxiliary function to translate prosite expressions into re module expressions.
+def pattern_translation(pattern):
 
 	Prosite_Expressions = ['.','x','-','{','}','(',')','<','>','>]']
 	RE_Expressions = ['','.','','[^',']','{','}','^','$',']?$']
 	for cambio in range(len(RE_Expressions)):
 		pattern = pattern.replace(Prosite_Expressions[cambio],RE_Expressions[cambio])
-	'''patron = pattern.replace('.','')
-	patron1 = patron.replace('x','.')
-	patron2 = patron1.replace('-','')
-	patron3 = patron2.replace('{','[^')
-	patron4 = patron3.replace('}',']')
-	patron5 = patron4.replace('(','{')
-	patron6 = patron5.replace(')','}')'''
+
 	return pattern
 
-def PatternSearch(PatternDict, HitsDict): #QueryFile):
+
+# Function to search for patterns in the hit sequences. We obtain a dictionary with hit_id as keys and patterns found as values.
+def pattern_search(PatternDict, HitsDict): 
 	print ('\n' + ('Searching for Prosite domains in hits...').center(80))
 	Patrones = PatternDict.keys()
 	IDs = HitsDict.keys()
@@ -53,7 +44,9 @@ def PatternSearch(PatternDict, HitsDict): #QueryFile):
 
 	return ResultDict
 
-def OutputResults(prosite_dat, ResultDict, Results_Dir):
+
+# We write the PROSITE information in a file called prosite_result.txt
+def output_results(prosite_dat, ResultDict, Results_Dir):
 
 	output = open (Results_Dir + 'prosite_result.txt',"w")
 	HitIds = ResultDict.keys()
@@ -71,7 +64,8 @@ def OutputResults(prosite_dat, ResultDict, Results_Dir):
 				
 	return	
 
-def HitsFileToDict(HitsFile):
+
+def hits_file_to_dict(HitsFile):
 
 	HitsDict={}
 	file = open (HitsFile, 'r')
@@ -86,7 +80,9 @@ def HitsFileToDict(HitsFile):
 
 	return HitsDict
 
-def WantMoreInfo(prosite_doc, ResultDict, Results_Dir):
+
+# We ask the user if he/she wants more information, and, if so, we use prosite.doc
+def want_more_info(prosite_doc, ResultDict, Results_Dir):
 	while True:
 		print ('\nDo you want to obtain more information about the domains detected in the hits?')
 		MoreInfo = input('[Y|N]: ').upper()
@@ -94,7 +90,7 @@ def WantMoreInfo(prosite_doc, ResultDict, Results_Dir):
 
 			for key in ResultDict.keys():
 				
-				DocParser(prosite_doc, key, ResultDict, Results_Dir)
+				doc_parser(prosite_doc, key, ResultDict, Results_Dir)
 			return
 		elif MoreInfo == 'N':
 			return
@@ -102,8 +98,9 @@ def WantMoreInfo(prosite_doc, ResultDict, Results_Dir):
 			print ('Sorry, We did not understand you. Please answer yes by typing "y", "Y" or clicking intro, or answer no by typing "n" or "N".' )
 	return
 
-def DocParser(prosite_doc, key, ResultDict, Results_Dir):
-	# con este script podemos parsear el archivo .doc
+
+# prosite.doc parser
+def doc_parser(prosite_doc, key, ResultDict, Results_Dir):
 	Ext_Info = open (Results_Dir + 'Extended_Domain_Info_%s.txt' %(key),'w')
 	Ext_Info.write('\n' + (' Extended information about the domains in %s ' %(key)).center(78,'#') + '\n\n')
 	for Prosite_Id in ResultDict[key]:
@@ -112,24 +109,12 @@ def DocParser(prosite_doc, key, ResultDict, Results_Dir):
 		for record in records:
 			try:
 				if len(record.prosite_refs) > 0:
-					
 					for domain in range(len(record.prosite_refs)):
-						#print (record.prosite_refs[domain][0],domain,Prosite_Id)
 						if Prosite_Id == record.prosite_refs[domain][0]:
-#						elif record.prosite_refs[domain][0] == Prosite_Id:
-						#if Prosite_Id in record.prosite_refs[domain]:
-							#i+=1
-							#print(record.accession)
-							#print(type(record.prosite_refs))
 							Ext_Info.write(Prosite_Id.center(80))
 							Ext_Info.write('\n\n')
 							Ext_Info.write(record.text)
-							#print(count)
-							#print(record.references.decode('utf-8'))
-						#print ("Fuera")
 			except:
 				pass
 				
 	return
-
-#DocParser()

@@ -1,16 +1,25 @@
-import sys, os, shutil
-import gbk, blaster, fasta, muscle, prosite, help, plots
-from matplotlib import pyplot as plt
+import sys
+import os
+import shutil
+
+import gbk
+import blaster
+import fasta
+import muscle
+import prosite
+import help
+import plots
+
 
 def main():
-    ## Help module controls that query and genbank are correctly provided.
+    # Help module controls that query and genbank are correctly provided and has a tutorial.
     query,Genbank = help.main()
 
-    basename = os.path.basename(query)
+    basename = os.path.basename(query) # We do not want the full path as the query name.
 
-    ## Results and Data directory are created if they do not exist. 
-    ## Within them a directory with the name of the query is created.
-    ## All the files will be saved to these directories.
+    # Results and Data directory are created if they do not exist. 
+    # Within them a directory with the basename of the query is created.
+    # All the files will be saved to these directories.
     if not os.path.exists('Results'):
         os.mkdir('Results')
     if not os.path.exists('Results/' + str(basename)):
@@ -22,58 +31,54 @@ def main():
     if not os.path.exists('Data/' + str(basename) + '/Queries'):
         os.mkdir('Data/' + str(basename) + '/Queries')
 
-
+    # We check the query is in fasta format. If it is not, we end the execution.
+    # If it is fasta, we create a separate fasta file for each sequence in the query.
     if fasta.is_it_fasta(query,basename):
         pass
     else:
         print ("\n" + (query + ' is not fasta.').center(80))
         print ('Please check the format of your query_file.'.center(80) + "\n")
         try: 
-            os.rmdir('Results/' + str(basename)) ## We delete this empty directory.
+            os.rmdir('Results/' + str(basename)) # We delete this directory if it is empty. 
         except:
-            pass
-        shutil.rmtree('Data/' + str(basename)) ## We delete this directory which is not empty. We do not loose important information by deleting this directory.
-        sys.exit()
+            pass   # If it is not empty we do not delete it. We do not want to delete previous analysis.
+        shutil.rmtree('Data/' + str(basename)) # We delete this directory which is not empty. We do not loose important information by deleting this directory.
+        sys.exit() 
 
-    if gbk.is_it_genbank(Genbank,basename):
+    # We check the genbank file is in genbank format and do the same as with the query file.
+    # If it is a genbank, this function gets al the protein sequences to make a multifasta.
+    if gbk.is_it_genbank(Genbank,basename): 
         pass
     else:
         print ("\n" + (Genbank + ' is not a Genbank.').center(80))
         print ('Please check the format of your Genbank_file.'.center(80) + "\n")
         try: 
-            os.rmdir('Results/' + str(basename)) ## We delete this empty directory.
+            os.rmdir('Results/' + str(basename)) # We delete this empty directory.
         except:
             pass
         shutil.rmtree('Data/' + str(basename)) 
         sys.exit()
 
-    #gbk.Gbk_To_Fasta(Genbank, basename)
-
     Data_Dir = 'Data/' + str(basename)
-
     subject = Data_Dir + '/gbk_fasta.fa'
 
-    
-
-    ## Query and Genbank  files and their metadata are copied to Data directory.
+    # Query and Genbank files and their metadata are copied to Data directory.
     shutil.copy2(query, Data_Dir)
     shutil.copy2(Genbank, Data_Dir)
     
-    ## Blast identity and coverage thresholds are asked
-    # coverage, identity = blaster.Coverage_Identity()
-
+    # We run the program for each sequence in the query.
     with os.scandir(Data_Dir + '/Queries') as it:
         for query_file in it:
-
-            coverage, identity = blaster.Coverage_Identity(query_file.name)
+            # First, we ask for the coverage and identity thresholds.
+            coverage, identity = blaster.coverage_identity(query_file.name)
         
             new_query = Data_Dir + '/Queries/' + query_file.name
-            ## We define the directories for the results 
+            # We define the directories for the results. 
             Results_Dir = 'Results/' + str(basename) + '/' + query_file.name + '_Cov_' + str(coverage) + '_Id_' + str(identity) + '/' 
             Results_Blast = Results_Dir + 'Blast/'
             Results_Prosite = Results_Dir + 'Prosite/'
             Results_Muscle = Results_Dir + 'Muscle/'
-            ## If they do not exist, we create them
+            # If they do not exist, we create them.
             if not os.path.exists(Results_Dir):
                 os.mkdir(Results_Dir)
             if not os.path.exists(Results_Blast):
@@ -85,44 +90,42 @@ def main():
             
             Process_log = open (Results_Dir + 'Process.log',"w")
             Process_log.write(' Analysis for query: %s '.center(80,'*') % (query_file.name))
-            Process_log.close()
+            Process_log.close() # We close the log file because other functions are going to open it.
 
-            blaster.Blaster(new_query, subject, coverage, identity, basename, results_dir = Results_Dir)
+            ## BLAST analysis ##
+            blaster.blaster(new_query, subject, coverage, identity, basename, results_dir = Results_Dir) # BLAST analysis.
             
-            ## If at least one homologue is found for the criteria indicated. The first row of the file is the header.
-            if len(open(Results_Blast + 'Blast_result.tsv').readlines()) > 1:
+            # We continue with the analysis if at least one homologue is found for the criteria indicated. 
+            if len(open(Results_Blast + 'Blast_result.tsv').readlines()) > 1: # The first row of the file is the header.
                 
-                plots.Blast_plot('Blast_result.tsv', Results_Blast, identity)
+                plots.blast_plot('Blast_result.tsv', Results_Blast, identity)
 
-                Hits = blaster.BlasterHits('Blast_result.tsv')
+                Hits = blaster.blaster_hits('Blast_result.tsv') # List containing all the hits_ids.
 
-                fasta.SeqFromID(subject, Hits)
+                fasta.seq_from_id(subject, Hits) # We get the hit sequences from the genbank converted to fasta.
 
-                ## We add the queries to the hits to have all the proteins together for the subsequent analyses.
-                # fasta.AddQueries("HitsFile.txt", 'Data/' + str(basename) + '/Query_In_Fasta.fa') 
-                fasta.AddQueries("HitsFile.txt", new_query) 
+                # We add the queries to the hits to have all the proteins together for the subsequent analyses.
+                fasta.add_queries("HitsFile.txt", new_query) 
 
-                HitsFile = "HitsFile.txt"
+                HitsFile = "HitsFile.txt" # Temporary fasta file with all the sequences. 
                 
-                muscle.Align_Seqs(HitsFile)
+                ## MUSCLE analysis ##
+                muscle.align_seqs(HitsFile)
 
-                AlignedHitsFile = 'HitsAligned.afa'
-
-                muscle.CreateTree(AlignedHitsFile, Results_Dir = Results_Dir, Results_Muscle = Results_Muscle)
-
+                AlignedHitsFile = 'HitsAligned.afa'  # Temporary alignment file. 
+                # With the alignment, we create the Neighbor Joining tree with muscle in newick format.
+                muscle.create_tree(AlignedHitsFile, Results_Dir = Results_Dir, Results_Muscle = Results_Muscle)
+                # With the newick format tree, we draw a simple plot.
+                Tree = muscle.draw_tree(Results_Muscle + 'NJ_Tree.phy', Results_Dir = Results_Muscle)
                 
-                #Tree = muscle.CreateTree(HitsFile)
-
-                Tree = muscle.DrawTree(Results_Muscle + 'NJ_Tree.phy', Results_Dir = Results_Muscle)
-    
-                #Tree.savefig('Results/Tree.png')
-                
+                ## PROSITE analysis ##
                 Process_log = open (Results_Dir + 'Process.log',"a") ## The file is closed. We open in append mode.
                 Process_log.write('\n\n\n' + ('Domain search in Prosite').center(80))
                 prosite_dat = 'prosite.dat'
+                # We check the prosite.dat file is in the directory and has the correct format.
                 try:
                     Process_log.write('\n\n' + ('Parsing ' + prosite_dat + '...').center(80))
-                    PatternDict = prosite.DatParser(prosite_dat)
+                    PatternDict = prosite.dat_parser(prosite_dat)
                 except:
                     Process_log.write()
                     Process_log.write('\n\n' + ('Errors encountered while parsing ' + prosite_dat).center(80))
@@ -130,70 +133,58 @@ def main():
                     sys.exit()
 
                 Process_log.write('\n\n' + ('Looking for domains in hits...').center(80))
-                HitsDict = prosite.HitsFileToDict(HitsFile)
-
-                ResultDict = prosite.PatternSearch(PatternDict,HitsDict)
-
-                prosite.OutputResults (prosite_dat, ResultDict, Results_Prosite)
-
-                ## More information about the domains?
-                prosite.WantMoreInfo("prosite.doc", ResultDict, Results_Prosite)
                 
-                ## Printing information in Process.log file
+                HitsDict = prosite.hits_file_to_dict(HitsFile) # Dictionary with BLAST hits as keys and no values.
+                # We look for PROSITE domains in the hit sequences.
+                ResultDict = prosite.pattern_search(PatternDict,HitsDict) 
+
+                prosite.output_results (prosite_dat, ResultDict, Results_Prosite)
+
+                # More information about the domains?
+                prosite.want_more_info("prosite.doc", ResultDict, Results_Prosite)
+                
+                # Printing information in Process.log file
                 Process_log.write('\n\n' + ('Domain search completed').center(80) + '\n')
                 Process_log.write (('Check Prosite results at: ' + Results_Prosite).center(80))
 
                 Process_log.write('\n\n\n' + ('Analysis completed').center(80) + '\n\n\n')
                 Process_log.close()
-
+            
+            # If no homologues are found for the query protein with the thresholds indicated.
             else:
                 print ('BLAST analysis yielded no results'.center(80))
                 Process_log = open (Results_Dir + 'Process.log',"a") ## The file is closed. We open in append mode.
                 Process_log.write('\n\n\n' + ('Analysis ended because BLAST analysis yielded no results').center(80))
 
-    ## Accessory files are deleted.
+    # Accessory files are deleted.
     try:
         os.remove(HitsFile)
-        #os.remove('Blast_result.tsv')
+        os.remove('Blast_result.tsv')
         os.remove('HitsAligned.afa')
         os.remove('HitsAligned.aln')
         shutil.rmtree(Data_Dir + '/Queries')
     except:
         pass
 
+    return basename # byebye function needs basename to indicate where the results have been saved.
 
-    #Hits_File = open("HitsFile.txt","a")
-    #with open (query) as reader:
-    #   for line in reader:
-    #      print("hola")
-    #     Hits_File.write(line)'''
 
-    return basename
-
-def Welcome():
-    # Se ejecuta cuando el usuario inicia.
+# Welcome message.
+def welcome():
     print ('\n' + ' WELCOME TO EASY PHYLO & DOM '.center(80,'*') + '\n')
-    #print ('Este asistente le permitirá interactuar de manera fácil e intuitiva con la base de datos DisGeNET.'.center(100))
-    #print ('Navegue por los distintos menús, que le guiarán por las diferentes opciones que le ofrecemos.'.center(100))
-    #print ('Puede consultar información de distinta índole y borrar, insertar y modificar datos.'.center(100))
-    
-    return
-
-def ByeBye(basename):
-    # Se ejecuta cuando el usuario no quiere hacer más operaciones.
-    print ()
-    print('Thank you for using EASY PHYLO & DOM.'.center(80))
-    print ()
-    print (('You can check your results at Results/' + str(basename)).center(80))
-    print (('Data files have been saved in Data/' + str(basename)).center(80))
-    print ()
-    print('We hope to have been helpful.\n'.center(80))
-    print (' SEE YOU SOON '.center(80,'*'))
-    print ()
-     
     return
 
 
-Welcome()
+# Byebye message.
+def byebye(basename):
+    print('\n' + 'Thank you for using EASY PHYLO & DOM.'.center(80))
+    print ('\n' + ('You can check your results at Results/' + str(basename)).center(80))
+    print ('\n' + ('Data files have been saved in Data/' + str(basename)).center(80))
+    print('\n' + 'We hope to have been helpful.\n'.center(80))
+    print (' SEE YOU SOON '.center(80,'*') + '\n')
+    return
+
+
+welcome()
 basename = main()
-ByeBye(basename)
+byebye(basename)
