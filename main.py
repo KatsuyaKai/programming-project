@@ -112,6 +112,9 @@ def main():
                 ## MUSCLE analysis ##
                 muscle.align_seqs(HitsFile)
 
+                # We save the alignment to MUSCLE folder
+                shutil.copy2('HitsAligned.aln', Results_Muscle)
+
                 AlignedHitsFile = 'HitsAligned.afa'  # Temporary alignment file. 
                 # With the alignment, we create the Neighbor Joining tree with muscle in newick format.
                 muscle.create_tree(AlignedHitsFile, Results_Dir = Results_Dir, Results_Muscle = Results_Muscle)
@@ -152,6 +155,17 @@ def main():
                 Process_log.write (('Check Prosite results at: ' + Results_Prosite).center(80))
 
                 Process_log.write('\n\n\n' + ('Analysis completed').center(80) + '\n\n\n')
+                Process_log.write(('Analysis summary').center(80) + '\n\n')
+                Process_log.write('BLAST'.center(80) + '\n\n')
+                Process_log.write('Coverage threshold: ' + str(coverage) + '\n')
+                Process_log.write('Identity threshold: ' + str(identity) + '\n')
+                Process_log.write('Query name: ' + query_file.name + '\n')
+                Process_log.write('Genbank: ' + os.path.basename(Genbank) + '\n')
+                Process_log.write('Number of hits: ' + str(len(open('Blast_result.tsv').readlines())) + '\n\n')
+                Process_log.write('PROSITE'.center(80) + '\n\n')
+                for protein in ResultDict.keys():
+                    Process_log.write('Number of domains found in ' + protein + ': ' + str(len(ResultDict[protein])) + '\n')
+                
                 Process_log.close()
             
             # If no homologues are found for the query protein with the thresholds indicated.
