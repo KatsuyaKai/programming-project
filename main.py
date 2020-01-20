@@ -122,7 +122,11 @@ def main():
                 Process_log = open (Results_Dir + 'Process.log',"a") ## The file is closed. We open in append mode.
                 Process_log.write('\n\n\n' + ('Domain search in Prosite').center(80))
                 prosite_dat = 'prosite.dat'
+
                 # We check the prosite.dat file is in the directory and has the correct format.
+                if not os.path.isfile(prosite_dat):
+                    print ('\n' + "Please, make sure you have a file named prosite.dat" .center(80))
+                    sys.exit()
                 try:
                     Process_log.write('\n\n' + ('Parsing ' + prosite_dat + '...').center(80))
                     PatternDict = prosite.dat_parser(prosite_dat)

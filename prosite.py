@@ -1,5 +1,7 @@
 import re
 import csv
+import sys
+import os
 
 from Bio.ExPASy import Prosite,Prodoc
 
@@ -87,6 +89,9 @@ def want_more_info(prosite_doc, ResultDict, Results_Dir):
 		print ('\nDo you want to obtain more information about the domains detected in the hits?')
 		MoreInfo = input('[Y|N]: ').upper()
 		if MoreInfo == 'Y' or MoreInfo == '':
+			if not os.path.isfile(prosite_doc):
+				print ('\n' + "Please, make sure you have a file named prosite.doc".center(80))
+				sys.exit()
 
 			for key in ResultDict.keys():
 				
