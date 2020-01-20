@@ -83,22 +83,21 @@ def blast_plot(Blast_result_file, Results_Dir, identity):
                             plt.hlines(hit_ids[number_of_hit], qstart[number_of_hit], qend[number_of_hit], color='lightgreen')#, label = hit_id[number_of_hit] + ' Identity = ' + str(hit_identity[number_of_hit])
                         if hit_identity[number_of_hit] > 80 and hit_identity[number_of_hit] <= 100: 
                             plt.hlines(hit_ids[number_of_hit], qstart[number_of_hit], qend[number_of_hit], color='g')#, label = hit_id[number_of_hit] + ' Identity = ' + str(hit_identity[number_of_hit])
+                    number_of_hit += 1
             # Once there are no more hits or 10 hits have already been plotted.        
             else:
                 break
             
-            number_of_hit += 1
         # To maintain the dimensions if there are less than 10 hits.    
         for hits_left in range(number_of_hit,10):
-            plt.hlines(hits_left, 0, 1, color='yellow', alpha = 0)
-            number_of_hit +=1
+            plt.hlines(hits_left + 2, 0, 1, color='yellow', alpha = 0)
 
         ax.invert_yaxis()
         ax.set_xlabel('Query length (bp)')
         ax.set_ylabel('Hits')
         ax.set_title('Query Coverage')
         plt.yticks(fontsize = "xx-small")
-        ax.set_xlim(-(qlen*0.02), qlen*1.02) ## There is a space between the figure limits and the start and begining of the axes.
+        ax.set_xlim(-(qlen*0.02), qlen*1.02) # There is a space between the figure limits and the start and begining of the axes.
         plt.savefig(Results_Dir + 'Blast_Plot.png')
             
     return
