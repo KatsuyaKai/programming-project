@@ -197,6 +197,7 @@ def welcome():
 def byebye(basename):
     print('\n' + 'Thank you for using EASY PHYLO & DOM.'.center(80))
     print ('\n' + ('You can check your results at Results/' + str(basename)).center(80))
+    print ('\n' + ('You will find a summary at Process.log file').center(80))
     print ('\n' + ('Data files have been saved in Data/' + str(basename)).center(80))
     print('\n' + 'We hope to have been helpful.\n'.center(80))
     print (' SEE YOU SOON '.center(80,'*') + '\n')
