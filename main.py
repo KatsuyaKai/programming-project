@@ -128,7 +128,7 @@ def main():
 
                 # We check the prosite.dat file is in the directory and has the correct format.
                 if not os.path.isfile(prosite_dat):
-                    print ('\n' + "Please, make sure you have a file named prosite.dat" .center(80))
+                    print ('\n' + '\x1b[1;31;40m' + "Please, make sure you have a file named prosite.dat" .center(80) + '\x1b[0m')
                     sys.exit()
                 try:
                     Process_log.write('\n\n' + ('Parsing ' + prosite_dat + '...').center(80))
@@ -153,7 +153,6 @@ def main():
                 # Printing information in Process.log file
                 Process_log.write('\n\n' + ('Domain search completed').center(80) + '\n')
                 Process_log.write (('Check Prosite results at: ' + Results_Prosite).center(80))
-
                 Process_log.write('\n\n\n' + ('Analysis completed').center(80) + '\n\n\n')
                 Process_log.write(('Analysis summary').center(80) + '\n\n')
                 Process_log.write('BLAST'.center(80) + '\n\n')
@@ -170,7 +169,7 @@ def main():
             
             # If no homologues are found for the query protein with the thresholds indicated.
             else:
-                print ('BLAST analysis yielded no results'.center(80))
+                print ('\n' + '\x1b[1;31;40m' + 'BLAST analysis yielded no results'.center(80) + '\x1b[0m')
                 Process_log = open (Results_Dir + 'Process.log',"a") ## The file is closed. We open in append mode.
                 Process_log.write('\n\n\n' + ('Analysis ended because BLAST analysis yielded no results').center(80))
 
@@ -189,18 +188,19 @@ def main():
 
 # Welcome message.
 def welcome():
-    print ('\n' + ' WELCOME TO EASY PHYLO & DOM '.center(80,'*') + '\n')
+    print ('\n' + '\x1b[1;32;41m' + ' WELCOME TO EASY PHYLO & DOMAIN '.center(80,'*') + '\x1b[0m' + '\n')
     return
 
 
 # Byebye message.
 def byebye(basename):
-    print('\n' + 'Thank you for using EASY PHYLO & DOM.'.center(80))
-    print ('\n' + ('You can check your results at Results/' + str(basename)).center(80))
-    print ('\n' + ('You will find a summary at Process.log file').center(80))
+    print('\n\n' + '\x1b[5;30;42m' + ('Analysis completed').center(80) + '\x1b[0m')
+    print('\n' + '\x1b[6;34;47m' + 'Thank you for using EASY PHYLO & DOMAIN.'.center(80) + '\x1b[0m')
+    print ('\n' + ('You can check your results at ' + '\x1b[1;32;40m' + 'Results/' + str(basename) + '\x1b[0m').center(80))
+    print ('\n' + ('You will find a summary at ' + '\x1b[1;32;40m' + 'Process.log' + '\x1b[0m' + ' file').center(80))
     print ('\n' + ('Data files have been saved in Data/' + str(basename)).center(80))
     print('\n' + 'We hope to have been helpful.\n'.center(80))
-    print (' SEE YOU SOON '.center(80,'*') + '\n')
+    print ('\x1b[7;34;43m' + ' SEE YOU SOON '.center(80,'*') + '\x1b[0m' + '\n')
     return
 
 
