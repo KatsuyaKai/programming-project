@@ -152,7 +152,7 @@ Upon completion of the search for PROSITE domains in query and hits sequences, t
 <a id="help"></a>
 ## WHERE TO FIND HELP <a name="help"></a>
 
-If you have bugs, feature requests, please report the issues here: (https://github.com/readbio/ViewBS/issues).
+If you have bugs, feature requests, please report the issues here: (https://github.com/KatsuyaKai/programming-project/issues).
 
 <a id="commercial-use"></a>
 ## COMMERCIAL USE
