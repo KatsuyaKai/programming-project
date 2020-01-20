@@ -10,7 +10,7 @@ def main():
             if os.path.exists(query) and os.path.exists(Genbank): 
                 break
             else:
-                print ('The query and/or the genbank file do not exist.')
+                print ('\x1b[1;31;40m' + 'The query and/or the genbank file do not exist.'.center(80) + '\x1b[0m' + '\n')
     elif len(sys.argv) == 2:
         if sys.argv[1] == '-h' or sys.argv[1] == 'help':
             Help()
@@ -23,7 +23,7 @@ def main():
             Genbank = sys.argv[2]
         else:
             while True:
-                print ('The query and/or the genbank file do not exist.')
+                print ('\x1b[1;31;40m' + 'The query and/or the genbank file do not exist.'.center(80) + '\x1b[0m' + '\n')
                 query,Genbank = assistant()
                 if os.path.exists(query) and os.path.exists(Genbank): 
                     break        
@@ -43,13 +43,13 @@ def incorrect_arguments():
 
 # Usage guide
 def Help():
-    print ('\n' + (' EASY_PHYLO_&_DOM Tutorial ').center(80,'#') + '\n')
-    print ('\n' + (' What is this programme for? ').center(80,'-') + '\n')
+    print ('\n' + '\x1b[1;33;40m' + (' EASY_PHYLO_&_DOM Tutorial ').center(80,'#') + '\x1b[0m' + '\n')
+    print ('\n' + '\x1b[1;32;40m' + (' What is this programme for? ').center(80,'-') + '\x1b[0m' + '\n')
     print ('Given a protein sequence (query), this programme allows you to:')
     print ('\t1. Search for homologue proteins (BLAST) in a Genbank.')
     print ('\t2. Align BLAST hits and create a Neighbor Joining phylogenetic tree\n\t   with Muscle')
     print ('\t3. Look for prosite domains in your query and its homologues.')
-    print ('\n' + ' How to use this programme '.center(80,'-') + '\n')
+    print ('\n' + '\x1b[1;32;40m' + ' How to use this programme '.center(80,'-') + '\x1b[0m' + '\n')
     print ('You should call this programme as <python main.py query_file Genbank_file>'.center(80)+ '\n')
     print ('query_file must be in fasta and can contain more than a query.'.center(80))
     print ('GenBank_file must be a GenBank.'.center(80) + '\n')
