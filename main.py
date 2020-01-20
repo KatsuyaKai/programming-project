@@ -100,7 +100,7 @@ def main():
                 
                 plots.blast_plot('Blast_result.tsv', Results_Blast, identity)
 
-                Hits = blaster.blaster_hits('Blast_result.tsv') # List containing all the hits_ids.
+                Hits = blaster.blaster_hits(Results_Blast + 'Blast_result.tsv') # List containing all the hits_ids.
 
                 fasta.seq_from_id(subject, Hits) # We get the hit sequences from the genbank converted to fasta.
 
