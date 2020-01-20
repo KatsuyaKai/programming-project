@@ -21,7 +21,7 @@ Table of Contents
 <a id='title'></a>
 # Easy Phylo & Domain
 
-Easy Phylo & Domain is a python package for fast phylogenetic analysis and protein domain search. 
+Easy Phylo & Domain is a python package  developed in python 3 for fast phylogenetic analysis and protein domain search. 
 
 Its modules allow to perform a BLAST analysis, create a phylogenetic tree with the BLAST hits and search for protein domains in them.
 
@@ -82,6 +82,9 @@ Genbank file must be a genbank. If your file is not in fasta format, please conv
 
 Upon completion of the run input files will be saved into a folder, named as the *query_file*, inside *Data* directory. A database with all the sequences in the Genbank will also be generated and saved in this folder.
 
+* **PROSITE files**
+
+For PROSITE domains search, both a *prosite.dat* and a *prosite.doc* files are required. Both are provided in this repository. Please, unzip *prosite.dat.zip* before using this programme. Should you want to use a more updated version of *prosite.doc*, you might have to edit with it a text editor as errors may arise.
 
 <a id="usage"></a>
 ## USAGE 
