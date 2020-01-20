@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="Images/cover.png">
+</p>
+
 Table of Contents
 =================
 
