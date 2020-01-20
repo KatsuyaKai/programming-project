@@ -150,8 +150,8 @@ BLAST hits will be aligned with the query using Muscle. Muscle phylogenetic anal
 
 Upon completion of the search for PROSITE domains in query and hits sequences, the outputs will include:
 
-    1. A file named *prosite_results.txt* with a summary of the main characteristics of the domains.
-    2. If you have asked for more information, a file named *Extended_Domain_Info.txt* will be created.
+    1. A file named prosite_results.txt with a summary of the main characteristics of the domains.
+    2. If you have asked for more information, a file named Extended_Domain_Info.txt will be created.
     
 <a id="help"></a>
 ## WHERE TO FIND HELP <a name="help"></a>
